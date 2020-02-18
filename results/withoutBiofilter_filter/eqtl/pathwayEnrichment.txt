@@ -1,0 +1,2 @@
+paste.unique.c.as.character.genesInBoth.gene.....collapse.......,path,chi2.statistic,chi2.p.value,fish.p.value,hyperGeom,chi2_weighted.statistic,chi2_weighted.p.value,fish_weighted.p.value,hyperGeom_Weighted
+DOCK3 PLXNB1 SEMA3F,GO_MOLECULAR_FUNCTION_REGULATOR,291516.907342943,0.0123992158803543,5.71557321153896,5.71557321153895,221704.467441244,0.245948798713902,5.8674510243473,0.017441895115765
