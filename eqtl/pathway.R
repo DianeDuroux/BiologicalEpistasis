@@ -38,7 +38,6 @@ for (i in 1:(B+1)){
 Pvalues=data.frame(Pvalues,perm)
 colnames(Pvalues)=c("genePair", "P", "SNP1", "SNP2", "perm")
 
-# Corect for multiple testing (fdr nb gene pairs tested)
 fwrite(truePhenoOutput, paste(args[1],"/pvalues/sign_GenePairs_withoutThreshold.txt", sep=""))
 
 #Select only gene pairs when the pairs are significant for the true phenotype
