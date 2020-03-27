@@ -17,7 +17,6 @@ snpToGene=path_SNPtoGene_mappingFile
 genes=path_converterGeneName_HUGO_Ensembl
 biofModels=path_geneModels
 
-
 module load R/3.5.1
 
 mkdir $dir/hla
@@ -57,8 +56,9 @@ jid4_cut=$(echo "$jid4" | cut -d ' ' -f4)
 ###############################
 # Pathway enrichment analysis #
 ###############################
-jid5=$(sbatch  --dependency=afterany:$jid4_cut  pathway.sh "$dir" "$mapFile" "$B" "$pathway")
+jid5=$(sbatch  --dependency=afterany:$jid4_cut  pathway.sh "$dir" "$mapFile" "$B" "$snpToGene" "$genes" "$biofModels" "$pathway")
 jid5_cut=$(echo "$jid5" | cut -d ' ' -f4)
+
 
 #################
 # Visualization #
