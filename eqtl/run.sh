@@ -4,15 +4,19 @@
 #SBATCH --partition=urtgen_24hrs
 #SBATCH --mem-per-cpu=40000 #40GB
 
-dir=/home/mass/ifilesets/URT/UG_STG/PRIV/Team/Diane/SNPtoGene/3_truePhenotypes/eqtl
-softwares=/home/mass/ifilesets/URT/UG_STG/PRIV/Team/Diane/softwares
-data=/home/mass/ifilesets/URT/UG_STG/PRIV/Data/IBD/dataset_response_residuals/CD_UC_CON_QCed_rel1_without_relatives_maf0.05_hwe0.001_Liu2015_232SNPs_LD0.75_eqtl_response
-dir_epistasis_output=/home/mass/ifilesets/URT/UG_STG/PRIV/Team/Diane/SNPtoGene/1_plink/true_phenotype/eqtl
-pathway=/home/mass/ifilesets/URT/UG_STG/PRIV/Team/Diane/SNPtoGene/0_data/pathway
+dir=path_currentDirectory
+softwares=Path_softwaresDirectory
+data=path/data
+dir_epistasis_output=path_EpistasisoutputDirectory
+pathway=path_pathwayDirectory
 B=999 #Number of permutations
-mapFile=/home/mass/ifilesets/URT/UG_STG/PRIV/Data/IBD/mapping/mapping_eqtl.txt
-pheno_ATPM=/home/mass/ifilesets/URT/UG_STG/PRIV/Team/Diane/SNPtoGene/1_plink/pheno
-threshold="0.0000000618"
+mapFile=path_SNPpairsToGenepairs_mapping
+pheno_ATPM=path_permutedPhenotypes
+threshold="experimental_threshold"
+snpToGene=path_SNPtoGene_mappingFile
+genes=path_converterGeneName_HUGO_Ensembl
+biofModels=path_geneModels
+
 
 module load R/3.5.1
 
