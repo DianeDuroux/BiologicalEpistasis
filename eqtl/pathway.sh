@@ -12,4 +12,4 @@ cd $1/pathway
 # ATPM #
 ########
 
-Rscript $1/pathway.R $1 $2 $3 $4 $5 $6
+Rscript $1/pathway.R $1 $2 $3 $4 $5 $6 $7
