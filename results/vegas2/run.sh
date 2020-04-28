@@ -1,0 +1,1 @@
+vegas2.nf --bfile CD_UC_CON_QCed_rel1_without_relatives_maf0.05_hwe0.001_Liu2015_232SNPs --genome 37 --buffer 10000 --vegas_params '-top 10' --covar CD_UC_CON_QCed_rel1_without_relatives.7pcs.evec -resume -profile cluster
