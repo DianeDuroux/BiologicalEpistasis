@@ -1,6 +1,6 @@
 library(tidyverse)
 
-eligible_snps <- read_tsv('CD_UC_CON_QCed_rel1_without_relatives_maf0.05_hwe0.001_Liu2015_232SNPs.bim', col_names = F) %>% filter(X1 != 6) %>% .$X2
+eligible_snps <- read_tsv('CD_UC_CON_QCed_rel1_without_relatives_maf0.05_hwe0.001_Liu2015_232SNPs_LD0.75_noFilter_continuous.bim', col_names = F) %>% filter(X1 != 6) %>% .$X2
 pos <- read_csv('~/projects/BiologicalEpistasis/results/withBiofilter_filter/eqtl/sign_SNPpairs.txt')
 pos <- unique(c(pos$SNP_1, pos$SNP_2))
 
