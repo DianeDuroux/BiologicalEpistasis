@@ -1,3 +1,4 @@
+#!/usr/bin/env Rscript
 library(tidyverse)
 
 eligible_snps <- read_tsv('CD_UC_CON_QCed_rel1_without_relatives_maf0.05_hwe0.001_Liu2015_232SNPs_LD0.75_noFilter_continuous.bim', col_names = F) %>% filter(X1 != 6) %>% .$X2
@@ -9,7 +10,7 @@ eqtl <- read_tsv('eqtl_mapping.tsv')
 other_snps <- filter(eqtl, (rsID %in% eligible_snps) & (!rsID %in% pos)) %>%
     .$rsID %>%
     unique %>%
-    sample(500)
+    sample(5000)
 snps = c(pos, other_snps) 
 
 tibble(snp = snps) %>%
