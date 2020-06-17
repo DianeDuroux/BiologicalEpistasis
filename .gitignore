@@ -1,4 +1,6 @@
 .DS_store 
+*.ld
+*.RData
 
 # Created by https://www.gitignore.io/api/jupyternotebooks
 # Edit at https://www.gitignore.io/?templates=jupyternotebooks
