@@ -4,21 +4,18 @@
 #SBATCH --partition=urtgen_24hrs
 #SBATCH --mem-per-cpu=40000 #40GB
 
-dir=/massstorage/URT/GEN/BIO3/PRIV/Team/Diane/SNPtoGene/3bis_truePhenotypes/withBiofilter/eqtl_bis
-softwares=/massstorage/URT/GEN/BIO3/PRIV/Team/Diane/softwares
-data=/massstorage/URT/GEN/BIO3/PRIV/Data/IBD/dataset_response_residuals/withBiofilter/CD_UC_CON_QCed_rel1_without_relatives_maf0.05_hwe0.001_Liu2015_232SNPs_LD0.75_eqtl_response
-dir_epistasis_output=/massstorage/URT/GEN/BIO3/PRIV/Team/Diane/SNPtoGene/1_plink/true_phenotype/withBiofilter/eqtl
-pathway=/massstorage/URT/GEN/BIO3/PRIV/Team/Diane/SNPtoGene/0_data/pathway
+dir=path_to_directory
+softwares=path_to_plink
+data=path_to_data_bed_bim_fam
+dir_epistasis_output=path_to_plink_epistasis_output
 B=999 #Number of permutations
-mapFile=/massstorage/URT/GEN/BIO3/PRIV/Data/IBD/mapping/mapping_eqtl.txt
+mapFile=path_to_mapping_file #SNP pair to gene pair
 pheno_ATPM=/massstorage/URT/GEN/BIO3/PRIV/Team/Diane/SNPtoGene/1_plink/pheno
-threshold="0.0000000618"
-snpToGene=/massstorage/URT/GEN/BIO3/PRIV/Data/IBD/FUMA/eqtl_mapping.tsv
-genes=/massstorage/URT/GEN/BIO3/PRIV/Data/IBD/genes.tsv
-biofModels=/massstorage/URT/GEN/BIO3/PRIV/Data/IBD/biofilter_models_ensembl.tsv
-pathway=/massstorage/URT/GEN/BIO3/PRIV/Team/Diane/SNPtoGene/0_data/pathway/kegg_go_biocarta_canonical_header.txt
-
-
+threshold="0.0000000618" #experimental threshold
+snpToGene=path_to_snp_to_gene_file
+genes=path_to_gene_conversion_file
+biofModels=path_to_gene_pair_biofilter_models
+pathway=kegg_go_biocarta_canonical_header.txt #path to investigated pathways
 
 
 module load R/3.5.1
