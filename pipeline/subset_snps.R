@@ -26,6 +26,7 @@ output <-list()
   output[[1]]=merge(output[[1]], mapping, by=c("SNP_1", "SNP_2")) #Map SNP pairs to gene-pairs
 
   gene_pairs=output[[1]][,4:5]
+  gene_pairs=unique(gene_pairs)
   colnames(gene_pairs)=c("gene1", "gene2")
   subset=merge(gene_pairs, mapping, by=c("gene1", "gene2"))
   head(subset)

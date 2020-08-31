@@ -6,7 +6,7 @@
 
 dir=/home/mass/ifilesets/URT/UG_STG/PRIV/Team/Diane/consensus_network/September/MBMDR/noFilter/
 
-rm $1/hla/hla*
+#rm $1/hla/hla*
 rm $1/perm/perm_1/data*
 rm $1/perm/perm_1/listSNPs_pval*
 rm $1/perm/perm_1/plink*

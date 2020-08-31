@@ -15,7 +15,7 @@ print(args)
 # Significant SNP-pairs #
 #########################
 Pvalue_SNPs=fread(paste(args[1], "/pvalues/sign_SNPpairs.txt", sep=""))
-data_SNP=Pvalue_SNPs[,1:3]
+data_SNP=Pvalue_SNPs[,c(1,2,4)]
 data_SNP=unique(data_SNP)
 head(Pvalue_SNPs)
 
