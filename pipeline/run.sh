@@ -10,13 +10,12 @@ data=path_to_data_bed_bim_fam
 dir_epistasis_output=path_to_plink_epistasis_output
 B=999 #Number of permutations
 mapFile=path_to_mapping_file #SNP pair to gene pair
-pheno_ATPM=/massstorage/URT/GEN/BIO3/PRIV/Team/Diane/SNPtoGene/1_plink/pheno
+pheno_ATPM=path_to_permuted_phenotypes
 threshold="0.0000000618" #experimental threshold
 snpToGene=path_to_snp_to_gene_file
-genes=path_to_gene_conversion_file
+genes=path_to_gene_conversion_file #(eg: symbol, HUGO, ...)
 biofModels=path_to_gene_pair_biofilter_models
-pathway=kegg_go_biocarta_canonical_header.txt #path to investigated pathways
-
+pathway=path_pathways_msigdbr.csv #path to investigated pathways
 
 module load R/3.5.1
 
@@ -47,28 +46,28 @@ jid2_cut=$(echo "$jid2" | cut -d ' ' -f4)
 jid3=$(sbatch  --dependency=afterany:$jid2_cut  output_format.sh "$dir" "$data" "$B" "$softwares" "$threshold" "$mapFile")
 jid3_cut=$(echo "$jid3" | cut -d ' ' -f4)
 
-###################################################################################
-# Calculate adjusted P-values, select significant pairs and visualize in networks #
-###################################################################################
+#########################################################
+# Calculate adjusted P-values, select significant pairs #
+#########################################################
 jid4=$(sbatch  --dependency=afterany:$jid3_cut  ATPM.sh "$dir" "$mapFile" "$B")
 jid4_cut=$(echo "$jid4" | cut -d ' ' -f4)
 
 ###############################
 # Pathway enrichment analysis #
 ###############################
-jid5=$(sbatch  --dependency=afterany:$jid4_cut  pathway.sh "$dir" "$mapFile" "$B" "$snpToGene" "$genes" "$biofModels" "$pathway" "$threshold")
-jid5_cut=$(echo "$jid5" | cut -d ' ' -f4)
+#jid5=$(sbatch  --dependency=afterany:$jid4_cut  pathway2.sh "$dir" "$mapFile" "$B" "$snpToGene" "$genes" "$biofModels" "$pathway" "$threshold" "$data")
+#jid5_cut=$(echo "$jid5" | cut -d ' ' -f4)
 
 
 #################
 # Visualization #
 #################
-jid6=$(sbatch  --dependency=afterany:$jid5_cut  network_visualization.sh "$dir")
-jid6_cut=$(echo "$jid6" | cut -d ' ' -f4)
+#jid6=$(sbatch  --dependency=afterany:$jid5_cut  network_visualization.sh "$dir")
+#jid6_cut=$(echo "$jid6" | cut -d ' ' -f4)
 
 #########
 # Clean #
 #########
-jid7=$(sbatch  --dependency=afterany:$jid6_cut  clean.sh "$dir")
+#jid7=$(sbatch  --dependency=afterany:$jid6_cut  clean.sh "$dir")
 
 

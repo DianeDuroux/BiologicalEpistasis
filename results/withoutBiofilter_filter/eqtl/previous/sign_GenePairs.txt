@@ -1,1 +1,0 @@
-genePairs_names,MinP,SNP1,SNP2,k
