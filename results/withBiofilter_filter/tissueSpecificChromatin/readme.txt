@@ -1,0 +1,1 @@
+nothing significant: no epistatic SNP-pair can be mapped to a biofilter gene-pair
