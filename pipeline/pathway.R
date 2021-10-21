@@ -4,8 +4,24 @@ library(plyr)
 library(igraph)
 library(dplyr)
 
+#library("msigdbr")
+#m_df = msigdbr(species = "Homo sapiens")
+#pathNames=unique(m_df$gs_name)
+#pathway=list()
+#a=1
+#for(i in pathNames){
+#  tmp=m_df[m_df$gs_name==i,c(2,5)]
+#  tmp=unique(tmp$human_gene_symbol)
+#  pathway[[a]]=c(i, tmp)
+#  a=a+1
+#}
+#df <- do.call(rbind.data.frame, pathway)
+#write.table(df, "pathways_msigdbr.csv", col.names = F)
+
 args=(commandArgs(TRUE))
 print(args)
+
+path=args[1]
 
 setwd(paste(args[1], "/pathway/", sep=""))
 
@@ -40,10 +56,11 @@ Pvalues=fread(paste(args[1],"/pvalues/Pvalues.txt", sep="")) #Load all gene-pair
 signPairs=truePhenoOutput[truePhenoOutput$MinP<0.05,] #significant gene pairs
 fwrite(signPairs, paste(args[1],"/pvalues/sign_GenePairs.txt", sep=""))
 
+
 ####################
 # Pathway analysis #
 ####################
-path=args[1]
+#path="C:/Users/Diane/Documents/2020/SNPtoGene/pathway/eqtl/04_09_20/"
 
 ################################################################################################
 # STEP 1: Create gene sets/clusters from significant gene pairs detected and biofilter network #
@@ -113,48 +130,67 @@ snpToGene=merge(snpToGene, genes, by="ensg") #Create SNP -> HUGO mapping
 snpToGene=snpToGene[,2:3]
 snpToGene=unique(snpToGene)
 colnames(snpToGene)=c("rsID", "gene")
-snpToGene=na.omit(snpToGene)
-mappableGenes=data.frame(unique(snpToGene$gene))
-colnames(mappableGenes)="gene"
+snpToGene=na.omit(snpToGene)  #346106
 
 #Reduce biofilter genes to mappable genes
-biofGenes=data.frame(nodes_func_network)
-colnames(biofGenes)="gene"
-biofMap=merge(biofGenes, mappableGenes, by="gene")
-#nbGenes=nrow(data.frame(unique(biofMap$gene))) #6455 instead of 14550 with genes in pathways
+biofilter=fread(args[6])
+biofilter=biofilter[,1:2]
+biofilter=data.frame(as.vector(t(biofilter)))
+biofilter=unique(biofilter)
+colnames(biofilter)="gene"
+biofMap=merge(biofilter, snpToGene, by="gene") #159865
+tmp_nbGenes=nrow(data.frame(unique(biofMap$gene))) #6455
+
+#Reduce biofilter genes to mappable genes
+
+#Import SNPs of the dataset
+snpData=fread(paste(args[9], ".bim", sep="")) #import snp to gene mapping (dataset specific)
+snpData=snpData[,2]
+colnames(snpData)="rsID"
+mappableGenes=merge(snpData, biofMap, by="rsID") #39698
+mappableGenes=data.frame(unique(mappableGenes$gene))
+colnames(mappableGenes)="gene" #6455
+
+#Reduce to genes in pathways
+pathway=fread(args[7]) #Load pathways
+pathway=pathway[,-c(1,2)] #Remove unnecessary columns
+pathway=data.frame(as.vector(t(pathway)))
+pathway=unique(pathway) 
+colnames(pathway)="gene"
+mappableGenes=merge(mappableGenes, pathway, by="gene")
+nbGenes=nrow(data.frame(unique(mappableGenes$gene))) #6054
 
 #Reduce genes in pathways to genes in biofilter and mapplable
-pathway=fread(args[7], na.strings=c("","NA")) #Load pathways
-pathway=pathway[-1,-2] #Remove unnecessary columns
-pathway=unique(pathway)
-pathway$V1=make.unique(pathway$V1) #add extension to duplicated pathway names (avoid to remove dupplicates)
-pathNames=pathway$V1
+pathway=fread(args[7]) #Load pathways
+pathway=pathway[,-1] #Remove unnecessary columns
+pathNames=pathway[,1]
 pathway=pathway[,-1] #remove pathway names
 
-genes_tot=unlist(pathway)
-genes_tot=data.frame(unique(genes_tot))
-colnames(genes_tot)="gene"
-genes_tot=merge(genes_tot,biofMap, by="gene" ) 
-nbGenes=nrow(data.frame(unique(genes_tot$gene))) #6399 genes
-
-#Reduce genes in pathways to genes in Biofilter and mappable
 BiofPath=list()
+pathToKeep=c()
+a=1
 for(i in 1:nrow(pathway)){
-  tmp=na.omit(data.frame(t(pathway[i,])))
-  colnames(tmp)="gene"
-  BiofPath[[i]]=t(merge(tmp, biofMap, by="gene"))
+   tmp=na.omit(data.frame(t(pathway[i,])))
+   tmp=unique(tmp)
+   colnames(tmp)="gene"
+   tmp=merge(tmp, mappableGenes, by="gene")
+   #if(nrow(tmp)>=10 & nrow(tmp)<=500){
+    pathToKeep=c(pathToKeep,i)
+    BiofPath[[a]]=t(tmp)
+    a=a+1
+ #}
 }
 df <- ldply(BiofPath, data.frame)
-df=data.frame(pathNames, df)
-write.table(df, "biofPathways.csv", col.names = F)
+pathNames2=pathNames[pathToKeep,]
+df2=data.frame(pathNames2, df) #13677
+write.table(df2, "pathways_msigdbr_notFfiltered.csv", col.names = F)
 
 ########################################################
 # STEP 3: enrichment analysis of each gene set/cluster #
 ########################################################
 #Load GSEA pathways
-#pathway=fread("biofPathways.csv")
-pathway=df
-#pathway=pathway[,-1]
+pathway=fread("pathways_msigdbr_notFfiltered.csv")
+pathway=pathway[,-1]
 pathway=unique(pathway)
 pathway=data.frame(t(pathway))
 
@@ -178,19 +214,17 @@ for (i in 1:length(clusters_allPairs)){ #For each cluster
       fish=fisher.test(contingency) 
       hyperGeom=phyper(nrow(genesInBoth)-1, nrow(genesInCluster), nbGenes-nrow(genesInCluster), 
                        nrow(genesInPath),lower.tail = FALSE)
-      output=data.frame(paste(unique(c(as.character(genesInBoth$gene))),collapse=" "), path, chi2$statistic,chi2$p.value, fish$p.value, hyperGeom) #and the corresponding P-value
+      output=data.frame(paste(unique(c(as.character(genesInBoth$gene))),collapse=" "), path, chi2$statistic,chi2$p.value, fish$p.value, hyperGeom, contingency[1,1], contingency[1,2], contingency[2,1], contingency[2,2]) #and the corresponding P-value
       pathway_analysis=rbind(pathway_analysis, output) #save results
     }
    }
 }
 
 #Correct the P-values with Bonferroni correction, based on the total number of pathways and the number of gene clusters identified
-pathway_analysis[,4:6]=pathway_analysis[,4:6]*(ncol(pathway)+length(clusters_allPairs))
-pathway_analysis_thresholdChi2=pathway_analysis[pathway_analysis$chi2.p.value<0.05,]
+pathway_analysis[,4:6]=pathway_analysis[,4:6]*(nrow(pathway_analysis)*length(clusters_allPairs))
+pathway_analysis <- pathway_analysis[order(pathway_analysis$hyperGeom),] 
 pathway_analysis_thresholdHyper=pathway_analysis[pathway_analysis$hyperGeom<0.05,]
 
-fwrite(pathway_analysis_thresholdHyper, paste(args[1],"/pathway/pathwayEnrichment.txt", sep=""), col.names=T)
-
-
+fwrite(pathway_analysis_thresholdHyper, "pathway_analysis_thresholdHyper.txt")
 
 
