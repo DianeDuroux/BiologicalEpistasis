@@ -1,53 +1,35 @@
-﻿**BiologicalEpistasis**
+# BiologicalEpistasis
 
-Code and results from "Duroux, D., Climente-Gonzáles, H., Azencott, C. A., & Van Steen, K. (2020). Interpretable network-guided epistasis detection. bioRxiv.", to detect epistatic interactions at the gene level along the edges of a gene-gene co-function network.
+We propose a procedure to detect epistatic interactions at the gene level along the edges of a gene-gene co-function network:
 
-**Usage**
+> Duroux, D., Climente-González, H., Azencott, C.-A., & Van Steen, K. (2020). **Interpretable network-guided epistasis detection.** bioRxiv. https://doi.org/10.1101/2020.09.24.310136
 
-The code necessary to replicate the analysis is in the folder "pipeline".
+This repository includes the code used to generate the results presented in this article. It consists of three subdirectories:
 
-Steps that are included in the pipeline:
+- `results/` contains the results presented in the article. The main script of the pipeline is [run.sh](pipeline/run.sh), and includes the following steps:
 
-\* Quality controls: hla and LD.
+  1. Quality controls: hla and LD
+  2. Gene-pairs p-values computation via the ATPM procedure
+  3. Pathway enrichment analysis
+  4. Visualization of the results
 
-\* Gene-pairs p-values computation via the ATPM procedure.
+- `pipeline/` contains the code used to produce the aforementioned results.
+- `doc/` contains the code used to produce the figures and analyses in the article.
 
-\* Pathway enrichment analysis.
+## Apply it to your dataset
 
-\* Visualization of the results.
+If you are interested in applying this protocol to your own dataset, we provide two options. The first one is the `network_epistasis.nf` script in [hclimente/gwas-tools](https://github.com/hclimente/gwas-tools#network_epistasis). The second one is cloning this repository, and modifying and running the `run.sh` file.
 
-The main script of the pipeline is “run.sh”. To apply the analysis on a new dataset, this is the only file to modify and to run.  The header of the file run.sh needs to be adapted by inserting paths to your specific files. To start the analysis, execute the run.sh script (via the command sbatch). 
-
-The main results will be uploaded in the folder "pvalues" (sign\_SNPpairs.txt and sign\_GenePairs.txt) and the folder "pathway" (pathway\_analysis\_thresholdHyper.txt and Rplots.pdf)
-
-**Input files format (in the header of the run.sh file)**
-
-data: bed/bim/fam (https://www.cog-genomics.org/plink/1.9/formats)
-
-mapFile: Gene1,Gene2,SNP1,SNP2
-
-snpToGene: SNP	gene (tab-separator)
-
-genes: ensg	symbol	entrezID	HUGO	type (tab-separator)
-
-biofModels: gene\_2,gene\_1,num\_sources,num\_instances,ensembl\_1,ensembl\_2 (from biofilter)
-
-pathway: "pathway" "gene1" "gene2"... (from the R package msigdbr). 
-
-**Citation**
+## Citation
 
 If you use this code in your projects please cite our work:
 
+```
 @article{duroux2020interpretable,
-
-`  `title={Interpretable network-guided epistasis detection},
-
-`  `author={Duroux, Diane and Climente-Gonz{\'a}les, H{\'e}ctor and Azencott, Chlo{\'e}-Agathe and Van Steen, Kristel},
-
-`  `journal={bioRxiv},
-
-`  `year={2020},
-
-`  `publisher={Cold Spring Harbor Laboratory}
-
+  title={Interpretable network-guided epistasis detection},
+  author={Duroux, Diane and Climente-Gonz{\'a}lez, H{\'e}ctor and Azencott, Chlo{\'e}-Agathe and Van Steen, Kristel},
+  journal={bioRxiv},
+  year={2020},
+  publisher={Cold Spring Harbor Laboratory}
 }
+```
