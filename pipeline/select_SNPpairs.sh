@@ -2,7 +2,7 @@
 #SBATCH --ntasks=1 #each job has one task
 #SBATCH --cpus-per-task=1 # each task uses 1 cpu
 #SBATCH --partition=urtgen_24hrs
-#SBATCH --mem-per-cpu=30000 #30GB
+#SBATCH --mem-per-cpu=80000 #80GB
 
 mkdir $1/perm/perm_1
 cd $1/perm/perm_1

@@ -2,7 +2,7 @@
 #SBATCH --partition=urtgen_24hrs
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=6
-#SBATCH --mem-per-cpu=4500
+#SBATCH --mem-per-cpu=50000
 
 ##################
 # Input for ATPM #

@@ -30,7 +30,7 @@ setwd(paste(args[1], "/pathway/", sep=""))
 ###############
 K=c(0.001, 0.01, 0.05, 0.1, 0.2)
 B=as.integer(args[3])
-exp_threshold=as.numeric(args[8])
+exp_threshold=as.numeric(args[7])
 exp_threshold
 
 ################################
@@ -44,6 +44,10 @@ output_true=data.frame(output_true$SNP_1, output_true$SNP_2, output_true$pvalue_
 colnames(output_true)=c("SNP_1", "SNP_2", "pvalue_uncorrected_MT", "pvalue_corrected_MT", "gene1", "gene2")
 head(output_true)
 fwrite(output_true, paste(args[1],"/pvalues/sign_SNPpairs.txt", sep=""))
+output_true=data.frame(output_true$SNP_1, output_true$SNP_2)
+output_true=unique(output_true)
+colnames(output_true)=c("SNP_1", "SNP_2")
+fwrite(output_true, paste(args[1],"/pvalues/uniqueSNPPairs.txt", sep=""))
 
 ############################
 # Import gene pairs output #
@@ -76,8 +80,8 @@ genes_network=data.frame(c(levels(unlist(data.frame(gene_epi))))) #create list o
 colnames(genes_network)="genes"
 
 #Load functional/combined network = biofilter network
-biofilter=fread(args[6])
-func_network=biofilter[,1:2]
+biofilter=fread(args[2])
+func_network=unique(biofilter[,1:2])
 func_network=data.frame(t(apply(func_network, 1, sort))) #order genes for each pair
 colnames(func_network)=c("gene1", "gene2")
 
@@ -133,8 +137,8 @@ colnames(snpToGene)=c("rsID", "gene")
 snpToGene=na.omit(snpToGene)  #346106
 
 #Reduce biofilter genes to mappable genes
-biofilter=fread(args[6])
-biofilter=biofilter[,1:2]
+biofilter=fread(args[2])
+biofilter=unique(biofilter[,1:2])
 biofilter=data.frame(as.vector(t(biofilter)))
 biofilter=unique(biofilter)
 colnames(biofilter)="gene"
@@ -144,7 +148,7 @@ tmp_nbGenes=nrow(data.frame(unique(biofMap$gene))) #6455
 #Reduce biofilter genes to mappable genes
 
 #Import SNPs of the dataset
-snpData=fread(paste(args[9], ".bim", sep="")) #import snp to gene mapping (dataset specific)
+snpData=fread(paste(args[8], ".bim", sep="")) #import snp to gene mapping (dataset specific)
 snpData=snpData[,2]
 colnames(snpData)="rsID"
 mappableGenes=merge(snpData, biofMap, by="rsID") #39698
@@ -152,7 +156,7 @@ mappableGenes=data.frame(unique(mappableGenes$gene))
 colnames(mappableGenes)="gene" #6455
 
 #Reduce to genes in pathways
-pathway=fread(args[7]) #Load pathways
+pathway=fread(args[6]) #Load pathways
 pathway=pathway[,-c(1,2)] #Remove unnecessary columns
 pathway=data.frame(as.vector(t(pathway)))
 pathway=unique(pathway) 
@@ -161,7 +165,7 @@ mappableGenes=merge(mappableGenes, pathway, by="gene")
 nbGenes=nrow(data.frame(unique(mappableGenes$gene))) #6054
 
 #Reduce genes in pathways to genes in biofilter and mapplable
-pathway=fread(args[7]) #Load pathways
+pathway=fread(args[6]) #Load pathways
 pathway=pathway[,-1] #Remove unnecessary columns
 pathNames=pathway[,1]
 pathway=pathway[,-1] #remove pathway names
