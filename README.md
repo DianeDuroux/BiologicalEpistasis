@@ -6,6 +6,7 @@ We propose a procedure to detect epistatic interactions at the gene level along 
 
 This repository includes the code used to generate the results presented in this article. It consists of three subdirectories:
 
+- `data/` contains the samples and SNPs from the [IIBDGC dataset](https://www.ibdgenetics.org/) remaining after quality control in the article above.
 - `results/` contains the results presented in the article. The main script of the pipeline is [run.sh](pipeline/run.sh), and includes the following steps:
 
   1. Quality controls: hla and LD
